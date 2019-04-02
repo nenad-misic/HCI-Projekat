@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Idojaras.SingleHourControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Idojaras"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="120">
+    <Grid x:Name="Root">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.7*"></RowDefinition>
+            <RowDefinition Height="0.3*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="60"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Measurement.Temp}"></TextBlock>
+        <TextBlock Grid.Row="1" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Measurement.Time}"></TextBlock>
+    </Grid>
+</UserControl>
