@@ -18,6 +18,9 @@ using System.Threading;
 using WeatherAPI;
 using System.Collections.ObjectModel;
 using Idojaras.WeatherApi;
+using System.IO;
+using Newtonsoft.Json;
+using Idojaras.Models;
 
 namespace Idojaras
 {
@@ -641,6 +644,21 @@ namespace Idojaras
         #endregion
 
 
+        public List<City> Cities { get; set; }
+
+        public delegate void onSearchClicked(int id);
+        public onSearchClicked searchCallback { get; set; }
+
+        void search(int id)
+        {
+            Thread t = new Thread(() => QueryWeatherApi(id));
+            t.Start();
+            t.Join();
+
+            fillContentFromList();
+        }
+
+        // TODO Observable collection
         public List<WeatherMeasurement> WeatherList;
         public MainContent()
         {
@@ -652,20 +670,24 @@ namespace Idojaras
             clickedCard2 = new onCardClicked(onClicked2);
             clickedCard3 = new onCardClicked(onClicked3);
             clickedCard4 = new onCardClicked(onClicked4);
+            this.searchCallback = new onSearchClicked(search);
             LayoutRoot.DataContext = this;
-            Thread t = new Thread(QueryWeatherApi);
 
-            t.Start();
-            t.Join();
+            // read json file with cities
+            using (StreamReader file = File.OpenText("../../Cities/cities.txt"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                this.Cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+            }
 
-            fillContentFromList();
+            this.search(792680);
 
             this.DayDetail = this.Day0Detail;
         }
 
-        public void QueryWeatherApi()
+        public void QueryWeatherApi(int id)
         {
-            this.WeatherList = WeatherMeasurement.GetWeatherMeasurements(1);
+            this.WeatherList = WeatherMeasurement.GetWeatherMeasurements(id);
             return;
         }
 

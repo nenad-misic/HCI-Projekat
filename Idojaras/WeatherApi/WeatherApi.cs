@@ -27,7 +27,7 @@ namespace WeatherAPI
         private static async Task<string> getWeatherAsync(int id)
         {
             try {
-                return await client.GetStringAsync("http://api.openweathermap.org/data/2.5/forecast?id=792680&appid=546808a4356c606f832e12c5588bb3df");
+                return await client.GetStringAsync("http://api.openweathermap.org/data/2.5/forecast?id=" + id.ToString() + "&appid=546808a4356c606f832e12c5588bb3df");
             }catch(Exception e)
             {
                 return "{}";

@@ -39,8 +39,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Viewbox HorizontalAlignment="Center" Grid.ColumnSpan="11" Margin="0 10 0 0" Stretch="Uniform">
-            <local:SearchControl Background="Transparent" MinTemp="{Binding Path=ColumnSetup.Col0, Mode=OneWay}"></local:SearchControl>
-            
+            <local:SearchControl Background="Transparent" MinTemp="{Binding Path=ColumnSetup.Col0, Mode=OneWay}" Cities="{Binding Path=Cities, Mode=OneWay}" searchClicked="{Binding Path=searchCallback}"></local:SearchControl>
         </Viewbox>
         <Viewbox Grid.Column="{Binding Path=Col0, Mode=OneWay}" Grid.ColumnSpan="{Binding Path=ColSpan0, Mode=OneWay}" Grid.Row="1" Grid.RowSpan="{Binding Path=RowSpan0, Mode=OneWay}" Margin="10 10 5 10" VerticalAlignment="Top" Stretch="Uniform">
             <Grid>

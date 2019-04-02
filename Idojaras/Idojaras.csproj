@@ -66,6 +66,7 @@
     <Compile Include="MainContent.xaml.cs">
       <DependentUpon>MainContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\City.cs" />
     <Compile Include="notSelectedDay.xaml.cs">
       <DependentUpon>notSelectedDay.xaml</DependentUpon>
     </Compile>
@@ -156,7 +157,7 @@
     <Resource Include="Cities\output.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Resource Include="Cities\cities.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Rain.png" />

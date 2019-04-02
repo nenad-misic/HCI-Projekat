@@ -7,7 +7,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="500">
     <StackPanel Orientation="Horizontal" x:Name="Root">
-        <TextBox Background="#54c3dc" Width="400" FontSize="20" Text="{Binding Path=MinTemp, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-        <Button Background="#54c3dc" Width="100" FontSize="20">Search</Button>
+        <ComboBox Background="#54c3dc" Width="400" FontSize="20" x:Name="cmbx" ItemsSource="{Binding Cities}" DisplayMemberPath="Name" IsEditable="True">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="#54c3dc"/>
+                    <Setter Property="BorderBrush" Value="#54c3dc"/>
+                    <Setter Property="ScrollViewer.Background" Value="#54c3dc"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+            <ComboBox.Style>
+                <Style>
+                    <EventSetter Event="TextBox.TextChanged" Handler="TextBox_TextChanged" />
+                </Style>
+            </ComboBox.Style>
+        </ComboBox>
+        <Button Background="#54c3dc" Width="100" FontSize="20" Click="Button_Click">Search</Button>
     </StackPanel>
 </UserControl>
