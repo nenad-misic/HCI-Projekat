@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Threading.Tasks;
 
 using WeatherAPI;
 using System.Collections.ObjectModel;
@@ -30,7 +31,7 @@ namespace Idojaras
     public partial class MainContent : UserControl, INotifyPropertyChanged
     {
         public CityLocation curloc { get; set; }
-
+        public bool noInternet { get; set; }
         #region CardClickCallbacks
         public onCardClicked clickedCard0 { get; set; }
         public onCardClicked clickedCard1 { get; set; }
@@ -714,9 +715,20 @@ namespace Idojaras
 
         void search(City city)
         {
-            Thread t = new Thread(() => QueryWeatherApi(city.Id));
-            t.Start();
-            t.Join();
+            var task = Task.Run(() =>
+            {
+                Thread t = new Thread(() => QueryWeatherApi(city.Id));
+                t.Start();
+                t.Join();
+            });
+            if (task.Wait(TimeSpan.FromSeconds(3)))
+            {
+                
+            } else
+            {
+                LayoutRoot.Visibility = Visibility.Collapsed;
+                noNet.Visibility = Visibility.Visible;
+            }
 
             fillContentFromList();
             setCurrentCity(city);
@@ -758,15 +770,22 @@ namespace Idojaras
         }
 
         public void LoadFavourites()
-        {
-            using (StreamReader file = File.OpenText("../../Cities/favourites.txt"))
+        { 
+            try
             {
-                JsonSerializer serializer = new JsonSerializer();
-                List<City> temp_favourites = (List<City>)serializer.Deserialize(file, typeof(List<City>));
-                if (temp_favourites == null)
-                    Favourites = new ObservableCollection<City>();
-                else
-                    Favourites = new ObservableCollection<City>(temp_favourites);
+                using (StreamReader file = File.OpenText("../../Cities/favourites.txt"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    List<City> temp_favourites = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                    if (temp_favourites == null)
+                        Favourites = new ObservableCollection<City>();
+                    else
+                        Favourites = new ObservableCollection<City>(temp_favourites);
+                }
+            }
+            catch (Exception e)
+            {
+                Favourites = new ObservableCollection<City>();
             }
         }
 
@@ -852,14 +871,21 @@ namespace Idojaras
 
         public void LoadHistory()
         {
-            using (StreamReader file = File.OpenText("../../Cities/history.txt"))
+            try
             {
-                JsonSerializer serializer = new JsonSerializer();
-                List<City> temp_history = (List<City>)serializer.Deserialize(file, typeof(List<City>));
-                if (temp_history == null)
-                    History = new ObservableCollection<City>();
-                else
-                    History = new ObservableCollection<City>(temp_history);
+                using (StreamReader file = File.OpenText("../../Cities/history.txt"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    List<City> temp_history = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                    if (temp_history == null)
+                        History = new ObservableCollection<City>();
+                    else
+                        History = new ObservableCollection<City>(temp_history);
+                }
+            }
+            catch (Exception e)
+            {
+                History = new ObservableCollection<City>();
             }
         }
         
@@ -867,68 +893,95 @@ namespace Idojaras
 
         public void FindCurLocation()
         {
-            this.curloc = CityLocation.GetCity();
+            try
+            {
+                this.curloc = CityLocation.GetCity();
+            } catch (Exception e)
+            {
+                this.noInternet = true;
+
+            }
         }
+            
         //public List<WeatherMeasurement> WeatherList;
         public ObservableCollection<WeatherMeasurement> WeatherList;
         public MainContent()
         {
-            Thread t = new Thread(() => FindCurLocation());
-            t.Start();
-            t.Join();
+
 
             InitializeComponent();
+            try
+            {
+                noNet.Visibility = Visibility.Hidden;
+                Thread t = new Thread(() =>
+           FindCurLocation());
 
-            clickedCard0 = new onCardClicked(onClicked0);
-            clickedCard1 = new onCardClicked(onClicked1);
-            clickedCard2 = new onCardClicked(onClicked2);
-            clickedCard3 = new onCardClicked(onClicked3);
-            clickedCard4 = new onCardClicked(onClicked4);
-            this.searchCallback = new onSearchClicked(search);
-            Favourites = new ObservableCollection<City>();
-            History = new ObservableCollection<City>();
-            LayoutRoot.DataContext = this;
+            t.Start();
+            t.Join();
+            }
+            catch (Exception e)
+            {
+                LayoutRoot.Visibility = Visibility.Collapsed;
+                noNet.Visibility = Visibility.Visible;
+
+            }
+            if (this.noInternet)
+            {
+                LayoutRoot.Visibility = Visibility.Collapsed;
+                noNet.Visibility = Visibility.Visible;
+            }
+            else { 
+                clickedCard0 = new onCardClicked(onClicked0);
+                clickedCard1 = new onCardClicked(onClicked1);
+                clickedCard2 = new onCardClicked(onClicked2);
+                clickedCard3 = new onCardClicked(onClicked3);
+                clickedCard4 = new onCardClicked(onClicked4);
+                this.searchCallback = new onSearchClicked(search);
+                Favourites = new ObservableCollection<City>();
+                History = new ObservableCollection<City>();
+                LayoutRoot.DataContext = this;
             
 
-            // read json file with cities
-            using (StreamReader file = File.OpenText("../../Cities/cities.txt"))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                this.Cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
-            }
-
-            LoadHistory();
-            LoadFavourites();
-
-            City belgrade = new City("Belgrade", 792680);
-
-            var lista = (from asd in this.Cities where asd.Name.ToLower().Equals(this.curloc.Name.ToLower()) select asd).ToList();
-            City curcity = null;
-            if(lista.Count > 0)
-            {
-                curcity = lista[0];
-            }
-            else
-            {
-                List<City> allCities;
-                using (StreamReader file = File.OpenText("../../Cities/allcities.txt"))
+                // read json file with cities
+                using (StreamReader file = File.OpenText("../../Cities/cities.txt"))
                 {
                     JsonSerializer serializer = new JsonSerializer();
-                    allCities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                    this.Cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
                 }
-                var bigList = (from city in allCities where city.Name.ToLower().Equals(this.curloc.Name.ToLower()) select city).ToList();
-                if (bigList.Count > 0)
+
+                LoadHistory();
+                LoadFavourites();
+
+                City belgrade = new City("Belgrade", 792680);
+
+                var lista = (from asd in this.Cities where asd.Name.ToLower().Equals(this.curloc.Name.ToLower()) select asd).ToList();
+                City curcity = null;
+                if(lista.Count > 0)
                 {
-                    curcity = bigList[0];
+                    curcity = lista[0];
                 }
                 else
                 {
-                    curcity = belgrade;
+                    List<City> allCities;
+                    using (StreamReader file = File.OpenText("../../Cities/allcities.txt"))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        allCities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                    }
+                    var bigList = (from city in allCities where city.Name.ToLower().Equals(this.curloc.Name.ToLower()) select city).ToList();
+                    if (bigList.Count > 0)
+                    {
+                        curcity = bigList[0];
+                    }
+                    else
+                    {
+                        curcity = belgrade;
+                    }
                 }
-            }
-            this.search(curcity);
+                this.search(curcity);
 
-            this.DayDetail = this.Day0Detail;
+                this.DayDetail = this.Day0Detail;
+            }
         }
 
         public void QueryWeatherApi(int id)
