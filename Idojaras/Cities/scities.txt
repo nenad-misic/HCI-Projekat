@@ -1,0 +1,102 @@
+﻿[
+  {
+    "name": "Azadshahr",
+    "id": 14256
+  },
+  {
+    "name": "Protaras",
+    "id": 18918
+  },
+  {
+    "name": "Kahriz",
+    "id": 23814
+  },
+  {
+    "name": "Nurabad",
+    "id": 24851
+  },
+  {
+    "name": "Istgah-e Garmsarrrrrrrrrrrrrrrrrrrrr",
+    "id": 32723
+  },
+  {
+    "name": "Qarchak",
+    "id": 32767
+  },
+  {
+    "name": "Khorram Darreh",
+    "id": 41210
+  },
+  {
+    "name": "Wanlaweyn",
+    "id": 50672
+  },
+  {
+    "name": "Qoryooley",
+    "id": 52867
+  },
+  {
+    "name": "Qandala",
+    "id": 53157
+  },
+  {
+    "name": "Mogadishu",
+    "id": 53654
+  },
+  {
+    "name": "Luuq",
+    "id": 54715
+  },
+  {
+    "name": "Kismaayo",
+    "id": 55671
+  },
+  {
+    "name": "Jilib",
+    "id": 56166
+  },
+  {
+    "name": "Jawhar",
+    "id": 56335
+  },
+  {
+    "name": "Jamaame",
+    "id": 56399
+  },
+  {
+    "name": "Hargeysa",
+    "id": 57289
+  },
+  {
+    "name": "Gaalkacyo",
+    "id": 59611
+  },
+  {
+    "name": "Eyl",
+    "id": 60019
+  },
+  {
+    "name": "Ceerigaabo",
+    "id": 62691
+  },
+  {
+    "name": "Ceeldheer",
+    "id": 62788
+  },
+  {
+    "name": "Buurhakaba",
+    "id": 63571
+  },
+  {
+    "name": "Buulobarde",
+    "id": 63689
+  },
+  {
+    "name": "Burco",
+    "id": 63795
+  },
+  {
+    "name": "Boosaaso",
+    "id": 64013
+  }
+]

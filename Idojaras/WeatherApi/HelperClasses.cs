@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace WeatherAPI
 {
+    class LocationWrapper
+    {
+        public string ip, city, region, country, loc, org;
+    }
     class Biggest
     {
         public String cod, message;

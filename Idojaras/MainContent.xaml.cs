@@ -29,6 +29,8 @@ namespace Idojaras
     /// </summary>
     public partial class MainContent : UserControl, INotifyPropertyChanged
     {
+        public CityLocation curloc { get; set; }
+
         #region CardClickCallbacks
         public onCardClicked clickedCard0 { get; set; }
         public onCardClicked clickedCard1 { get; set; }
@@ -720,6 +722,7 @@ namespace Idojaras
             setCurrentCity(city);
             setCurrentTemperature();
             updateIsFavourite();
+            updateHistory(city);
             
             this.selectedCard = 0;
         }
@@ -745,6 +748,28 @@ namespace Idojaras
                 }
             }
         }
+        public void SaveFavourites()
+        {
+            using (StreamWriter file = File.CreateText(@"../../Cities/favourites.txt"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, Favourites);
+            }
+        }
+
+        public void LoadFavourites()
+        {
+            using (StreamReader file = File.OpenText("../../Cities/favourites.txt"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                List<City> temp_favourites = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                if (temp_favourites == null)
+                    Favourites = new ObservableCollection<City>();
+                else
+                    Favourites = new ObservableCollection<City>(temp_favourites);
+            }
+        }
+
         public void updateFavourite()
         {
             var value = IsFavourite;
@@ -761,6 +786,7 @@ namespace Idojaras
                 if (!exists)
                 {
                     Favourites.Add(new City(CurrentCityName, CurrentCityId));
+                    SaveFavourites();
                 }
             }
             else
@@ -770,6 +796,7 @@ namespace Idojaras
                     if (CurrentCityId == Favourites.ElementAt(i).Id)
                     {
                         Favourites.Remove(Favourites.ElementAt(i));
+                        SaveFavourites();
                         break;
                     }
                 }
@@ -792,10 +819,64 @@ namespace Idojaras
 
         #endregion
 
+        #region History
+        public ObservableCollection<City> History { get; set; }
+
+        public void updateHistory(City city)
+        {
+            for (int i = 0; i < History.Count; i++)
+            {
+                if (History.ElementAt(i).Name == city.Name)
+                {
+                    History.RemoveAt(i);
+                    break;
+                }
+            }
+            History.Insert(0, city);
+            if (History.Count > 7)
+            {
+                History.RemoveAt(History.Count - 1);
+                //History = new ObservableCollection<City>(History.ToList().GetRange(0,3));
+            }
+            SaveHistory();
+        }
+
+        public void SaveHistory()
+        {
+            using (StreamWriter file = File.CreateText(@"../../Cities/history.txt"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(file, History);
+            }
+        }
+
+        public void LoadHistory()
+        {
+            using (StreamReader file = File.OpenText("../../Cities/history.txt"))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                List<City> temp_history = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                if (temp_history == null)
+                    History = new ObservableCollection<City>();
+                else
+                    History = new ObservableCollection<City>(temp_history);
+            }
+        }
+        
+        #endregion
+
+        public void FindCurLocation()
+        {
+            this.curloc = CityLocation.GetCity();
+        }
         //public List<WeatherMeasurement> WeatherList;
         public ObservableCollection<WeatherMeasurement> WeatherList;
         public MainContent()
         {
+            Thread t = new Thread(() => FindCurLocation());
+            t.Start();
+            t.Join();
+
             InitializeComponent();
 
             clickedCard0 = new onCardClicked(onClicked0);
@@ -805,7 +886,9 @@ namespace Idojaras
             clickedCard4 = new onCardClicked(onClicked4);
             this.searchCallback = new onSearchClicked(search);
             Favourites = new ObservableCollection<City>();
+            History = new ObservableCollection<City>();
             LayoutRoot.DataContext = this;
+            
 
             // read json file with cities
             using (StreamReader file = File.OpenText("../../Cities/cities.txt"))
@@ -814,9 +897,36 @@ namespace Idojaras
                 this.Cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
             }
 
+            LoadHistory();
+            LoadFavourites();
+
             City belgrade = new City("Belgrade", 792680);
 
-            this.search(belgrade);
+            var lista = (from asd in this.Cities where asd.Name.ToLower().Equals(this.curloc.Name.ToLower()) select asd).ToList();
+            City curcity = null;
+            if(lista.Count > 0)
+            {
+                curcity = lista[0];
+            }
+            else
+            {
+                List<City> allCities;
+                using (StreamReader file = File.OpenText("../../Cities/allcities.txt"))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    allCities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
+                }
+                var bigList = (from city in allCities where city.Name.ToLower().Equals(this.curloc.Name.ToLower()) select city).ToList();
+                if (bigList.Count > 0)
+                {
+                    curcity = bigList[0];
+                }
+                else
+                {
+                    curcity = belgrade;
+                }
+            }
+            this.search(curcity);
 
             this.DayDetail = this.Day0Detail;
         }
@@ -950,6 +1060,7 @@ namespace Idojaras
 
 
             var list0 = this.WeatherList.ToList().GetRange(0, 8);
+            //list0[4].Status = "Snow";
             var list1 = this.WeatherList.ToList().GetRange(ind, 8);
             var list2 = this.WeatherList.ToList().GetRange(ind+8, 8);
             var list3 = this.WeatherList.ToList().GetRange(ind+16, 8);

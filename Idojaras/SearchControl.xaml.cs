@@ -102,6 +102,15 @@ namespace Idojaras
             searchClicked((City)cmbx2.SelectedItem);
         }
 
+        private void HistorySelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbx3.SelectedItem == null)
+            {
+                return;
+            }
+            searchClicked((City)cmbx3.SelectedItem);
+        }
+
         
         public ObservableCollection<City> Favourites
         {
@@ -112,6 +121,52 @@ namespace Idojaras
         // Using a DependencyProperty as the backing store for Favourites.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FavouritesProperty =
             DependencyProperty.Register("Favourites", typeof(ObservableCollection<City>), typeof(SearchControl), new PropertyMetadata(null));
-        
+
+
+
+        public ObservableCollection<City> HistoryList
+        {
+            get { return (ObservableCollection<City>)GetValue(HistoryListProperty); }
+            set { SetValue(HistoryListProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for HistoryList.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HistoryListProperty =
+            DependencyProperty.Register("HistoryList", typeof(ObservableCollection<City>), typeof(SearchControl), new PropertyMetadata(null));
+
+
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            Search.Visibility = Visibility.Collapsed;
+            cmbx2.Visibility = Visibility.Collapsed;
+            cmbx3.Visibility = Visibility.Collapsed;
+            cmbx.Visibility = Visibility.Visible;
+            gospodin.Visibility = Visibility.Visible;
+            FavouritesButton.Visibility = Visibility.Visible;
+            History.Visibility = Visibility.Visible;
+        }
+
+        private void FavouritesButton_Click(object sender, RoutedEventArgs e)
+        {
+            Search.Visibility = Visibility.Visible;
+            cmbx2.Visibility = Visibility.Visible;
+            cmbx3.Visibility = Visibility.Collapsed;
+            cmbx.Visibility = Visibility.Collapsed;
+            gospodin.Visibility = Visibility.Collapsed;
+            FavouritesButton.Visibility = Visibility.Collapsed;
+            History.Visibility = Visibility.Visible;
+        }
+
+        private void History_Click(object sender, RoutedEventArgs e)
+        {
+            Search.Visibility = Visibility.Visible;
+            cmbx2.Visibility = Visibility.Collapsed;
+            cmbx3.Visibility = Visibility.Visible;
+            cmbx.Visibility = Visibility.Collapsed;
+            gospodin.Visibility = Visibility.Collapsed;
+            FavouritesButton.Visibility = Visibility.Visible;
+            History.Visibility = Visibility.Collapsed;
+        }
     }
 }

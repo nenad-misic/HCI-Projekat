@@ -82,7 +82,9 @@
     <Compile Include="SingleHourControl.xaml.cs">
       <DependentUpon>SingleHourControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WeatherApi\CityLocation.cs" />
     <Compile Include="WeatherApi\HelperClasses.cs" />
+    <Compile Include="WeatherApi\LocationApi.cs" />
     <Compile Include="WeatherApi\WeatherApi.cs" />
     <Compile Include="WeatherApi\WeatherInfo.cs" />
     <Compile Include="WeatherApi\WeatherMeasurement.cs" />
@@ -161,10 +163,10 @@
     <Resource Include="Images\Clear.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Cities\output.txt" />
+    <Resource Include="Cities\allcities.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Cities\cities.txt" />
+    <Resource Include="Cities\scities.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Rain.png" />
@@ -186,6 +188,28 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\checkstar_hover_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\history.png" />
+    <Resource Include="Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\history_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Cities\cities.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Snow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Cities\history.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Cities\favourites.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
