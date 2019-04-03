@@ -643,27 +643,161 @@ namespace Idojaras
 
         #endregion
 
+        #region SearchControls
+        public string _currentCityName;
+        public string CurrentCityName {
+            get
+            {
+                return _currentCityName;
+            }
+            set
+            {
+                if (value != _currentCityName)
+                {
+                    _currentCityName = value;
+                    OnPropertyChanged("CurrentCityName");
+                }
+            }
+        }
+
+        public string _currentTemperature;
+        public string CurrentTemperature
+        {
+            get
+            {
+                return _currentTemperature;
+            }
+            set
+            {
+                if (value != _currentTemperature)
+                {
+                    _currentTemperature = value;
+                    OnPropertyChanged("CurrentTemperature");
+                }
+            }
+        }
+
+        public int _currentCityId;
+        public int CurrentCityId
+        {
+            get
+            {
+                return _currentCityId;
+            }
+            set
+            {
+                if (value != _currentCityId)
+                {
+                    _currentCityId = value;
+                    OnPropertyChanged("CurrentCityId");
+                }
+            }
+        }
+
+        public void setCurrentCity(City city)
+        {
+            CurrentCityName = city.Name;
+            CurrentCityId = city.Id;
+        }
+
+        public void setCurrentTemperature()
+        {
+            this.CurrentTemperature = Convert.ToInt32((this.WeatherList.ElementAt(0).Temp - 273)).ToString() + "°";
+        }
 
         public List<City> Cities { get; set; }
 
-        public delegate void onSearchClicked(int id);
+        public delegate void onSearchClicked(City city);
         public onSearchClicked searchCallback { get; set; }
 
-        void search(int id)
+        void search(City city)
         {
-            Thread t = new Thread(() => QueryWeatherApi(id));
+            Thread t = new Thread(() => QueryWeatherApi(city.Id));
             t.Start();
             t.Join();
 
             fillContentFromList();
+            setCurrentCity(city);
+            setCurrentTemperature();
+            updateIsFavourite();
+
+
+            this.selectedCard = 0;
         }
 
-        // TODO Observable collection
-        public List<WeatherMeasurement> WeatherList;
+        #endregion
+
+        #region Favourites
+
+        public ObservableCollection<City> Favourites { get; set; }
+        public bool _isFavourite;
+        public bool IsFavourite
+        {
+            get
+            {
+                return _isFavourite;
+            }
+            set
+            {
+                if (value != _isFavourite)
+                {
+                    _isFavourite = value;
+                    OnPropertyChanged("IsFavourite");
+                }
+            }
+        }
+        public void updateFavourite()
+        {
+            var value = IsFavourite;
+            if (value)
+            {
+                bool exists = false;
+                for (int i = 0; i < Favourites.Count; i++)
+                {
+                    if (CurrentCityId == Favourites.ElementAt(i).Id)
+                    {
+                        exists = true;
+                    }
+                }
+                if (!exists)
+                {
+                    Favourites.Add(new City(CurrentCityName, CurrentCityId));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Favourites.Count; i++)
+                {
+                    if (CurrentCityId == Favourites.ElementAt(i).Id)
+                    {
+                        Favourites.Remove(Favourites.ElementAt(i));
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void updateIsFavourite()
+        {
+            for (int i = 0; i < Favourites.Count; i++)
+            {
+                if (CurrentCityId == Favourites.ElementAt(i).Id)
+                {
+                    IsFavourite = true;
+                    return;
+                }
+            }
+            IsFavourite = false;
+            return;
+        }
+
+        #endregion
+
+        //public List<WeatherMeasurement> WeatherList;
+        public ObservableCollection<WeatherMeasurement> WeatherList;
         public MainContent()
         {
             InitializeComponent();
-            this.selectedCard = 0;
 
             clickedCard0 = new onCardClicked(onClicked0);
             clickedCard1 = new onCardClicked(onClicked1);
@@ -671,6 +805,7 @@ namespace Idojaras
             clickedCard3 = new onCardClicked(onClicked3);
             clickedCard4 = new onCardClicked(onClicked4);
             this.searchCallback = new onSearchClicked(search);
+            Favourites = new ObservableCollection<City>();
             LayoutRoot.DataContext = this;
 
             // read json file with cities
@@ -680,22 +815,102 @@ namespace Idojaras
                 this.Cities = (List<City>)serializer.Deserialize(file, typeof(List<City>));
             }
 
-            this.search(792680);
+            City belgrade = new City("Belgrade", 792680);
+
+            this.search(belgrade);
 
             this.DayDetail = this.Day0Detail;
         }
 
         public void QueryWeatherApi(int id)
         {
-            this.WeatherList = WeatherMeasurement.GetWeatherMeasurements(id);
+            this.WeatherList = new ObservableCollection<WeatherMeasurement>(WeatherMeasurement.GetWeatherMeasurements(id));
             return;
         }
 
-        public WeatherInfo Day0 { get; set; }
-        public WeatherInfo Day1 { get; set; }
-        public WeatherInfo Day2 { get; set; }
-        public WeatherInfo Day3 { get; set; }
-        public WeatherInfo Day4 { get; set; }
+        public WeatherInfo _day0;
+        public WeatherInfo Day0 {
+            get
+            {
+                return _day0;
+            }
+            set
+            {
+                if (value != _day0)
+                {
+                    _day0 = value;
+                    OnPropertyChanged("Day0");
+                }
+            }
+        }
+
+        public WeatherInfo _day1;
+        public WeatherInfo Day1
+        {
+            get
+            {
+                return _day1;
+            }
+            set
+            {
+                if (value != _day1)
+                {
+                    _day1 = value;
+                    OnPropertyChanged("Day1");
+                }
+            }
+        }
+
+        public WeatherInfo _day2;
+        public WeatherInfo Day2
+        {
+            get
+            {
+                return _day2;
+            }
+            set
+            {
+                if (value != _day2)
+                {
+                    _day2 = value;
+                    OnPropertyChanged("Day2");
+                }
+            }
+        }
+
+        public WeatherInfo _day3;
+        public WeatherInfo Day3
+        {
+            get
+            {
+                return _day3;
+            }
+            set
+            {
+                if (value != _day3)
+                {
+                    _day3 = value;
+                    OnPropertyChanged("Day3");
+                }
+            }
+        }
+
+        public WeatherInfo _day4;
+        public WeatherInfo Day4
+        {
+            get
+            {
+                return _day4;
+            }
+            set
+            {
+                if (value != _day4)
+                {
+                    _day4 = value;
+                    OnPropertyChanged("Day4");
+                }
+            }
+        }
 
         public ObservableCollection<WeatherInfo> Day0Detail { get; set; }
         public ObservableCollection<WeatherInfo> Day1Detail { get; set; }
@@ -719,18 +934,20 @@ namespace Idojaras
                 }
             }
         }
+
         public void fillContentFromList()
         {
-            var list0 = this.WeatherList.GetRange(0, 8);
-            var list1 = this.WeatherList.GetRange(8, 8);
-            var list2 = this.WeatherList.GetRange(16, 8);
-            var list3 = this.WeatherList.GetRange(24, 8);
-            var list4 = this.WeatherList.GetRange(32, 8);
+            var list0 = this.WeatherList.ToList().GetRange(0, 8);
+            var list1 = this.WeatherList.ToList().GetRange(8, 8);
+            var list2 = this.WeatherList.ToList().GetRange(16, 8);
+            var list3 = this.WeatherList.ToList().GetRange(24, 8);
+            var list4 = this.WeatherList.ToList().GetRange(32, 8);
             this.Day0 = extractDayFromList(list0);
             this.Day1 = extractDayFromList(list1);
             this.Day2 = extractDayFromList(list2);
             this.Day3 = extractDayFromList(list3);
             this.Day4 = extractDayFromList(list4);
+            
 
             var obslist0 = new ObservableCollection<WeatherInfo>();
             var obslist1 = new ObservableCollection<WeatherInfo>();
@@ -792,5 +1009,9 @@ namespace Idojaras
             return wi;
         }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            updateFavourite();
+        }
     }
 }

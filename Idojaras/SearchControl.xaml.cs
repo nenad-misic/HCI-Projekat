@@ -1,6 +1,7 @@
 ﻿using Idojaras.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -41,20 +42,6 @@ namespace Idojaras
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-        public string MinTemp
-        {
-            get { return (string)GetValue(MinTempProperty); }
-            set { SetValue(MinTempProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MinTemp.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MinTempProperty =
-            DependencyProperty.Register("MinTemp", typeof(string), typeof(SearchControl), new PropertyMetadata(""));
-
-
-
-
         public List<City> Cities
         {
             get { return (List<City>)GetValue(CitiesProperty); }
@@ -76,10 +63,19 @@ namespace Idojaras
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            searchClicked(Convert.ToInt32(((City)cmbx.SelectedItem).Id));
+            searchClicked((City)cmbx.SelectedItem);
         }
 
 
+
+        private void TextBox2_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var cmbx2 = sender as ComboBox;
+            cmbx2.ItemsSource = from item in this.Cities
+                               where item.Name.ToLower().Contains(cmbx.Text.ToLower())
+                               select item;
+            cmbx2.IsDropDownOpen = true;
+        }
 
 
 
@@ -94,8 +90,26 @@ namespace Idojaras
         public static readonly DependencyProperty searchClickedProperty =
             DependencyProperty.Register("searchClicked", typeof(onSearchClicked), typeof(SearchControl), new PropertyMetadata(null));
 
+        
+        private void FavouriteSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbx2.SelectedItem == null)
+            {
+                return;
+            }
+            searchClicked((City)cmbx2.SelectedItem);
+        }
 
+        
+        public ObservableCollection<City> Favourites
+        {
+            get { return (ObservableCollection<City>)GetValue(FavouritesProperty); }
+            set { SetValue(FavouritesProperty, value); }
+        }
 
-
+        // Using a DependencyProperty as the backing store for Favourites.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FavouritesProperty =
+            DependencyProperty.Register("Favourites", typeof(ObservableCollection<City>), typeof(SearchControl), new PropertyMetadata(null));
+        
     }
 }

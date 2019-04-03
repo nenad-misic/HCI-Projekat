@@ -60,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CityLabel.xaml.cs">
+      <DependentUpon>CityLabel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HourlyControl.xaml.cs">
       <DependentUpon>HourlyControl.xaml</DependentUpon>
     </Compile>
@@ -83,6 +86,10 @@
     <Compile Include="WeatherApi\WeatherApi.cs" />
     <Compile Include="WeatherApi\WeatherInfo.cs" />
     <Compile Include="WeatherApi\WeatherMeasurement.cs" />
+    <Page Include="CityLabel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="HourlyControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
