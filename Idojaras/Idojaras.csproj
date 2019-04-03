@@ -175,5 +175,17 @@
   <ItemGroup>
     <Resource Include="Images\asdf.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\checkstar_off.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\checkstar_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\checkstar_hover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\checkstar_hover_on.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

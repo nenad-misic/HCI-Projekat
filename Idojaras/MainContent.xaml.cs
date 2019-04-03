@@ -720,8 +720,7 @@ namespace Idojaras
             setCurrentCity(city);
             setCurrentTemperature();
             updateIsFavourite();
-
-
+            
             this.selectedCard = 0;
         }
 
@@ -937,11 +936,24 @@ namespace Idojaras
 
         public void fillContentFromList()
         {
+
+            var temp = this.WeatherList.ToList().GetRange(1, this.WeatherList.ToList().Count - 1);
+            int ind = 0;
+            for(int i = 0; i < temp.Count; i++)
+            {
+                if (temp[i].Time.Hour == 0)
+                {
+                    ind = i+1;
+                    break;
+                }
+            }
+
+
             var list0 = this.WeatherList.ToList().GetRange(0, 8);
-            var list1 = this.WeatherList.ToList().GetRange(8, 8);
-            var list2 = this.WeatherList.ToList().GetRange(16, 8);
-            var list3 = this.WeatherList.ToList().GetRange(24, 8);
-            var list4 = this.WeatherList.ToList().GetRange(32, 8);
+            var list1 = this.WeatherList.ToList().GetRange(ind, 8);
+            var list2 = this.WeatherList.ToList().GetRange(ind+8, 8);
+            var list3 = this.WeatherList.ToList().GetRange(ind+16, 8);
+            var list4 = this.WeatherList.ToList().GetRange(ind+24, (this.WeatherList.ToList().Count - (ind+24)) < 8 ? this.WeatherList.ToList().Count - (ind + 24) : 8);
             this.Day0 = extractDayFromList(list0);
             this.Day1 = extractDayFromList(list1);
             this.Day2 = extractDayFromList(list2);

@@ -55,26 +55,28 @@ namespace Idojaras
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var cmbx = sender as ComboBox;
+
             cmbx.ItemsSource = from item in this.Cities
-                               where item.Name.ToLower().Contains(cmbx.Text.ToLower())
+                               where item.Name.ToLower().StartsWith(cmbx.Text.ToLower())
                                select item;
+            
             cmbx.IsDropDownOpen = true;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            searchClicked((City)cmbx.SelectedItem);
+            if(cmbx.Text != "")
+                searchClicked((City)cmbx.SelectedItem);
+            cmbx.Text = "";
+            cmbx2.Text = "";
+
+            cmbx.IsDropDownOpen = false;
         }
 
 
 
         private void TextBox2_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var cmbx2 = sender as ComboBox;
-            cmbx2.ItemsSource = from item in this.Cities
-                               where item.Name.ToLower().Contains(cmbx.Text.ToLower())
-                               select item;
-            cmbx2.IsDropDownOpen = true;
         }
 
 

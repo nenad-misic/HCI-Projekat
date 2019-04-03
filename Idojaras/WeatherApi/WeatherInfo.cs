@@ -11,15 +11,15 @@ namespace Idojaras.WeatherApi
     {
         public WeatherInfo()
         {
-            this.MinTemp = "0°/";
-            this.MaxTemp = "0°";
-            this.Temp = "0°";
-            this.Humidity = "0%";
-            this.Pressure = "0mbar";
-            this.Status = "Sunny";
-            this.Image = "/Images/Sunny.png";
-            this.Time = new DateTime().Hour.ToString();
-            this.Date = new DateTime().ToShortDateString();
+            this.MinTemp = "";
+            this.MaxTemp = "";
+            this.Temp = "";
+            this.Humidity = "";
+            this.Pressure = "";
+            this.Status = "";
+            this.Image = "";
+            this.Time = "";
+            this.Date = "";
 
         }
             public WeatherInfo(WeatherAPI.WeatherMeasurement wm)

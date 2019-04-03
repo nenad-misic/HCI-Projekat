@@ -11,7 +11,8 @@
             <RowDefinition Height="0.7*"></RowDefinition>
             <RowDefinition Height="0.3*"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock FontSize="60"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Measurement.Temp}"></TextBlock>
+        <TextBlock FontSize="50"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" Text="{Binding Measurement.Temp}"></TextBlock>
+        <Image Height="50" Width="50" VerticalAlignment="Bottom" Margin="10" Source="{Binding Measurement.Image}"></Image>
         <TextBlock Grid.Row="1" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Measurement.Time}"></TextBlock>
     </Grid>
 </UserControl>
